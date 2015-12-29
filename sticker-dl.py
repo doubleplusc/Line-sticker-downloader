@@ -27,9 +27,7 @@ With animation:
 "hasAnimation":true}
 
 Without animation:
-{"packageId":5736,"onSale":true,"validDays":0,"title":{"en":"Psalms of Planets Eureka seveN","es":"Psalms of Planets Eureka seveN","in":"Psalms of Planets Eureka seveN","ja":"äº¤éŸ¿è©©ç¯‡ã‚¨ã‚¦ãƒ¬ã‚«ã‚»ãƒ–ãƒ³","ko":"êµí–¥ì‹œíŽ¸ ìœ ë ˆì¹´ 7","th":"Psalms of Planets Eureka seveN","zh_CN":"äº¤å“è¯—ç¯‡","zh_TW":"äº¤éŸ¿è©©ç¯‡è‰¾è•¾å¡7"},
-"author":{"en":"BANDAI NAMCO Entertainment Inc.","ja":"ãƒãƒ³ãƒ€ã‚¤ãƒŠãƒ ã‚³ã‚¨ãƒ³ã‚¿ãƒ¼ãƒ†ã‚¤ãƒ³ãƒ¡ãƒ³ãƒˆ","ko":"BANDAI NAMCO Entertainment Inc.","zh_CN":"BANDAI NAMCO Entertainment Inc.","zh_TW":"BANDAI NAMCO Entertainment Inc."},
-"price":[{"country":"@@","currency":"NLC","symbol":"NLC","price":100.0},{"country":"HK","currency":"HKD","symbol":"HK$","price":15.0},{"country":"JP","currency":"JPY","symbol":"ï¿¥","price":200.0},{"country":"KR","currency":"KRW","symbol":"â‚©","price":2000.0},{"country":"SG","currency":"SGD","symbol":"S$","price":2.58},{"country":"TW","currency":"TWD","symbol":"NT$","price":60.0},{"country":"US","currency":"USD","symbol":"ï¼„","price":1.99}],
+{"packageId":5736,"onSale":true,"validDays":0,"title":{"en":"Psalms of Planets Eureka seveN","es":"Psalms of Planets Eureka seveN","in":"Psalms of Planets Eureka seveN","ja":"交響詩篇エウレカセブン","ko":"교향시편 유레카 7","th":"Psalms of Planets Eureka seveN","zh_CN":"交响诗篇","zh_TW":"交響詩篇艾蕾卡7"},"author":{"en":"BANDAI NAMCO Entertainment Inc.","ja":"バンダイナムコエンターテインメント","ko":"BANDAI NAMCO Entertainment Inc.","zh_CN":"BANDAI NAMCO Entertainment Inc.","zh_TW":"BANDAI NAMCO Entertainment Inc."},"price":[{"country":"@@","currency":"NLC","symbol":"NLC","price":100.0},{"country":"HK","currency":"HKD","symbol":"HK$","price":15.0},{"country":"JP","currency":"JPY","symbol":"￥","price":200.0},{"country":"KR","currency":"KRW","symbol":"₩","price":2000.0},{"country":"SG","currency":"SGD","symbol":"S$","price":2.58},{"country":"TW","currency":"TWD","symbol":"NT$","price":60.0},{"country":"US","currency":"USD","symbol":"＄","price":1.99}],
 "stickers":[{"width":231,"id":9194496,"height":225},{"width":242,"id":9194497,"height":225},{"width":242,"id":9194498,"height":227},
 {"width":248,"id":9194499,"height":233},{"width":239,"id":9194500,"height":225},{"width":239,"id":9194501,"height":225},
 {"width":249,"id":9194502,"height":225},{"width":242,"id":9194503,"height":227},{"width":248,"id":9194504,"height":233},
@@ -53,9 +51,16 @@ import requests, sys
 
 def main():
     pack_id = int(input("Enter the sticker pack ID: "))
-    pack_ext = input("Enter png, gif, or both: ")
     pack_url = "http://dl.stickershop.line.naver.jp/products/0/0/1/{}/android/productInfo.meta".format(pack_id)
-    get_pack_meta(pack_url)
+    pack_meta = get_pack_meta(pack_url).text
+
+    print(pack_meta)
+
+    if """"hasAnimation":true""" in pack_meta:
+        pack_ext = input("Animated stickers available! Enter png, gif, or both: ")
+
+
+    
 
 
 
@@ -67,11 +72,14 @@ def get_pack_meta(pack_url):
 
 
     if pack_meta.status_code == 200:
+        return pack_meta
+        '''
         f = open('dump.txt', 'w+b')  # [2] write mode
         f.write(pack_meta.content)  # [1] UnicodeEncodeError
         f.close()
-    elif pack_meta.status_code == 404:
-        print("{} is not a valid ID. Program exiting...".format(pack_id))
+        '''
+    else:
+        print("{} did not return 200 status code. Program exiting...".format(pack_id))
         sys.exit()
 
 
