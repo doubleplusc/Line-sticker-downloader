@@ -57,12 +57,28 @@ def main():
     print(pack_meta)
 
     if """"hasAnimation":true""" in pack_meta:
-        pack_ext = input("Animated stickers available! Enter png, gif, or both: ")
+        pack_ext = input("Animated stickers available! Enter png, gif, or both, anything else to exit: ")
+    else
+        pack_ext = input("Only static stickers available! y to continue, anything else to exit")
+
+    # [3] A less ugly way of checking menu values
+    if pack_ext in ("png", "y"):
+        get_png()
+    elif pack_ext in ("gif"):
+        get_gif()
+    elif pack_ext in ("both"):
+        get_png()
+        get_gif()
+    else:
+        print("Program exiting...")
+        sys.exit()
 
 
-    
+def get_gif():
+    pass
 
-
+def get_png():
+    pass
 
 def get_pack_meta(pack_url):
     pack_meta = requests.get(pack_url)
@@ -93,5 +109,7 @@ if __name__ == '__main__':
 [1] http://stackoverflow.com/questions/11435331/python-requests-and-unicode
 Solve Unicode with r.content instead of r.text
 [2] w+ creates file if it doesn't exist, truncates if it exists. b is for binary, Windows is picky. Never hurts to add b for platform friendliness
-
+[3] http://stackoverflow.com/questions/3260057/how-to-check-variable-against-2-possible-values-python
+leads to http://stackoverflow.com/questions/13186542/functions-in-python-dictionary
+How clever.
 '''
