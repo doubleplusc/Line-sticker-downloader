@@ -49,22 +49,41 @@ Without animation:
 
 '''
 
-import requests
+import requests, sys
 
-def get_pack_id:
+def main():
     pack_id = int(input("Enter the sticker pack ID: "))
     pack_ext = input("Enter png, gif, or both: ")
-    get_pack_meta(pack_id)
+    pack_url = "http://dl.stickershop.line.naver.jp/products/0/0/1/{}/android/productInfo.meta".format(pack_id)
+    get_pack_meta(pack_url)
 
 
 
-def get_pack_meta(pack_id):
-    pack_meta = requests.get("http://dl.stickershop.line.naver.jp/products/0/0/1/{}/android/productInfo.meta".format(pack_id))
+def get_pack_meta(pack_url):
+    pack_meta = requests.get(pack_url)
 
     # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html Status codes
     # It seems that normal request gives 200. Not sure what it means for program if non200 code is given. Will work with 200 for now.
 
-    if r.status_code == 404:
+
+    if pack_meta.status_code == 200:
+        f = open('dump.txt', 'w+b')  # [2] write mode
+        f.write(pack_meta.content)  # [1] UnicodeEncodeError
+        f.close()
+    elif pack_meta.status_code == 404:
         print("{} is not a valid ID. Program exiting...".format(pack_id))
-    elif r.status_code == 200:
-        pass
+        sys.exit()
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+'''
+[1] http://stackoverflow.com/questions/11435331/python-requests-and-unicode
+Solve Unicode with r.content instead of r.text
+[2] w+ creates file if it doesn't exist, truncates if it exists. b is for binary, Windows is picky. Never hurts to add b for platform friendliness
+
+'''
