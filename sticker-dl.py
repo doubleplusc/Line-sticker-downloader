@@ -49,6 +49,8 @@ Without animation:
 
 import requests, sys
 
+
+
 def main():
     pack_id = int(input("Enter the sticker pack ID: "))
     pack_url = "http://dl.stickershop.line.naver.jp/products/0/0/1/{}/android/productInfo.meta".format(pack_id)
@@ -61,6 +63,16 @@ def main():
     else
         pack_ext = input("Only static stickers available! y to continue, anything else to exit")
 
+    id_string = """"id":"""
+    list_ids = []
+
+    while True:
+        current_id, pack_meta = get_ids(id_string, pack_meta)  # "Passing by assignment" something mutable vs. immutables. SO answers are handwavey and fail to give useful explanation to a newcomer
+        if current_id != -1:
+            list_ids.append(current_id, pack_meta)
+        else:
+            break
+
     # [3] A less ugly way of checking menu values
     if pack_ext in ("png", "y"):
         get_png()
@@ -72,6 +84,12 @@ def main():
     else:
         print("Program exiting...")
         sys.exit()
+
+def get_ids(id_string, pack_meta):
+    start_index = pack_meta.find(id_string)
+    end_index = pack_meta.find(",", start_index + 1)
+    sticker_id = pack_meta[start_index+len(id_string):end_index]
+    return sticker_id, pack_meta[end_index:]
 
 
 def get_gif():
