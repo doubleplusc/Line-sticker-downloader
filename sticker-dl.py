@@ -52,26 +52,38 @@ import requests, sys
 
 
 def main():
-    pack_id = int(input("Enter the sticker pack ID: "))
-    pack_url = "http://dl.stickershop.line.naver.jp/products/0/0/1/{}/android/productInfo.meta".format(pack_id)
+    #pack_id = int(input("Enter the sticker pack ID: "))
+    #pack_url = "http://dl.stickershop.line.naver.jp/products/0/0/1/{}/android/productInfo.meta".format(pack_id)
+    pack_url = "http://dl.stickershop.line.naver.jp/products/0/0/1/5737/android/productInfo.meta"
     pack_meta = get_pack_meta(pack_url).text
 
-    print(pack_meta)
+    # print(pack_meta)
 
+    '''
     if """"hasAnimation":true""" in pack_meta:
         pack_ext = input("Animated stickers available! Enter png, gif, or both, anything else to exit: ")
-    else
+    else:
         pack_ext = input("Only static stickers available! y to continue, anything else to exit")
+    '''
 
     id_string = """"id":"""
     list_ids = []
 
-    while True:
-        current_id, pack_meta = get_ids(id_string, pack_meta)  # "Passing by assignment" something mutable vs. immutables. SO answers are handwavey and fail to give useful explanation to a newcomer
-        if current_id != -1:
-            list_ids.append(current_id, pack_meta)
-        else:
-            break
+    current_id, start_index = 0, 0  # [4] Why have start_index included
+
+    while start_index != -1:
+        start_index, current_id, pack_meta = get_ids(id_string, pack_meta)  # "Passing by assignment" something mutable vs. immutables. SO answers are handwavey and fail to give useful explanation to a newcomer
+        list_ids.append(current_id)
+
+    list_ids.pop()  # [4] Why pop
+
+    for n in list_ids:
+        print (n)
+
+    print(len(list_ids))
+
+    sys.exit()
+
 
     # [3] A less ugly way of checking menu values
     if pack_ext in ("png", "y"):
@@ -89,7 +101,7 @@ def get_ids(id_string, pack_meta):
     start_index = pack_meta.find(id_string)
     end_index = pack_meta.find(",", start_index + 1)
     sticker_id = pack_meta[start_index+len(id_string):end_index]
-    return sticker_id, pack_meta[end_index:]
+    return start_index, sticker_id, pack_meta[end_index:]
 
 
 def get_gif():
@@ -130,4 +142,6 @@ Solve Unicode with r.content instead of r.text
 [3] http://stackoverflow.com/questions/3260057/how-to-check-variable-against-2-possible-values-python
 leads to http://stackoverflow.com/questions/13186542/functions-in-python-dictionary
 How clever.
+[4] Originally had a conditional in the while state to check if the start_index was -1 to make sure it doesn't get added.
+But a pop is much better than the if check in every loop iteration.
 '''
