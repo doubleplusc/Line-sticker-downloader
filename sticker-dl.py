@@ -13,9 +13,9 @@ def main():
 
     
     if """"hasAnimation":true""" in pack_meta:
-        pack_ext = input("Animated stickers available! Enter png, gif, or both, anything else to exit: ")
+        pack_ext = input("\nAnimated stickers available! \nEnter png, gif, or both, anything else to exit: ")
     else:
-        pack_ext = input("Only static stickers available! y to continue, anything else to exit")
+        pack_ext = input("\nOnly static stickers available! \ny to continue, anything else to exit")
     
 
     id_string = """"id":"""
@@ -24,21 +24,22 @@ def main():
     current_id, start_index = 0, 0  # [4] Why have start_index included
 
     while start_index != -1:
-        start_index, current_id, pack_meta = get_ids(id_string, pack_meta)  # "Passing by assignment" something mutable vs. immutables. SO answers are handwavey and fail to give useful explanation to a newcomer
+        start_index, current_id, pack_meta = get_ids(id_string, pack_meta)  # "Passing by assignment" something mutable vs. immutables. SO didn't give particularly useful explanations...
         list_ids.append(current_id)
 
     list_ids.pop()  # [4] Why pop
 
 
     # [3] A less ugly way of checking menu values
-    menu = {'gif': get_gif, 'png': get_png, 'both': [get_gif, get_png]}
-    menu.setdefault()
-    if choice in menu[pack_ext]:  # there isn't really a good way to set the default return value if key doesn't exist without setdefault() on all of them
-        choice(list_ids, pack_id)
+    menu = {'gif': get_gif, ('y', 'png'): get_png, 'both': [get_gif, get_png]}  # I can use a tuple to make two keys for one value
+    if pack_ext in menu:  
+        for choice in menu[pack_ext]:
+            choice(list_ids, pack_id)
     else:
-        sys.exit()
+        print("Nothing done. Program exiting...")
 
-    print("Done! Program exiting...")
+    print("\nDone! Program exiting...")
+
     sys.exit()
 
 def get_ids(id_string, pack_meta):
@@ -49,15 +50,28 @@ def get_ids(id_string, pack_meta):
 
 
 def get_gif(list_ids, pack_id):
-    os.makedirs(pack_id, exist_ok = True)  # exist_ok = True doesn't raise exception if directory exists. Files already in directory are not erased
+    os.makedirs(str(pack_id), exist_ok = True)  # exist_ok = True doesn't raise exception if directory exists. Files already in directory are not erased
     for x in list_ids:
+        save_path = os.path.join(str(pack_id), str(x) + '.gif')
         url = 'http://lstk.ddns.net/animg/{}.gif'.format(x)
+        image = requests.get(url, stream = True)
+        with open(save_path, 'wb') as f:
+            for chunk in image.iter_content(chunk_size = 1024):
+                if chunk:
+                    f.write(chunk)
+
 
 def get_png(list_ids, pack_id):
-    os.makedirs(pack_id, exist_ok = True)
+    os.makedirs(str(pack_id), exist_ok = True)
     for x in list_ids:
+        save_path = os.path.join(str(pack_id), str(x) + '.png')
         url = 'http://dl.stickershop.line.naver.jp/stickershop/v1/sticker/{}/android/sticker.png'.format(x)
-        
+        image = requests.get(url, stream = True)
+        with open(save_path, 'wb') as f:
+            for chunk in image.iter_content(chunk_size = 1024):
+                if chunk:
+                    f.write(chunk)
+
 
 def get_pack_meta(pack_url):
     pack_meta = requests.get(pack_url)
