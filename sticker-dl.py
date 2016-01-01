@@ -1,7 +1,7 @@
 '''Line sticker downloader'''
 
 
-import requests, sys, wget
+import requests, sys, os
 
 
 
@@ -32,8 +32,11 @@ def main():
 
     # [3] A less ugly way of checking menu values
     menu = {'gif': get_gif, 'png': get_png, 'both': [get_gif, get_png]}
-    for choice in menu[pack_ext]:
-        choice(list_ids)
+    menu.setdefault()
+    if choice in menu[pack_ext]:  # there isn't really a good way to set the default return value if key doesn't exist without setdefault() on all of them
+        choice(list_ids, pack_id)
+    else:
+        sys.exit()
 
     print("Done! Program exiting...")
     sys.exit()
@@ -45,15 +48,16 @@ def get_ids(id_string, pack_meta):
     return start_index, sticker_id, pack_meta[end_index:]
 
 
-def get_gif(list_ids):
+def get_gif(list_ids, pack_id):
+    os.makedirs(pack_id, exist_ok = True)  # exist_ok = True doesn't raise exception if directory exists. Files already in directory are not erased
     for x in list_ids:
         url = 'http://lstk.ddns.net/animg/{}.gif'.format(x)
-        file = wget.download(url)
 
-def get_png(list_ids):
+def get_png(list_ids, pack_id):
+    os.makedirs(pack_id, exist_ok = True)
     for x in list_ids:
         url = 'http://dl.stickershop.line.naver.jp/stickershop/v1/sticker/{}/android/sticker.png'.format(x)
-        file = wget.download(url)
+        
 
 def get_pack_meta(pack_url):
     pack_meta = requests.get(pack_url)
