@@ -15,7 +15,7 @@ def main():
     if """"hasAnimation":true""" in pack_meta:
         pack_ext = input("\nAnimated stickers available! \nEnter png, gif, or both, anything else to exit: ")
     else:
-        pack_ext = input("\nOnly static stickers available! \ny to continue, anything else to exit")
+        pack_ext = input("\nOnly static stickers available! \ny to continue, anything else to exit: ")
     
 
     id_string = """"id":"""
@@ -31,8 +31,9 @@ def main():
 
 
     # [3] A less ugly way of checking menu values
-    menu = {'gif': get_gif, ('y', 'png'): get_png, 'both': [get_gif, get_png]}  # I can use a tuple to make two keys for one value
-    if pack_ext in menu:  
+    menu = {'gif': get_gif, 'png': get_png, 'y': get_png, 'both': [get_gif, get_png]}
+    print(menu[pack_ext])
+    if pack_ext in menu:
         for choice in menu[pack_ext]:
             choice(list_ids, pack_id)
     else:
@@ -67,8 +68,8 @@ def get_png(list_ids, pack_id):
         save_path = os.path.join(str(pack_id), str(x) + '.png')
         url = 'http://dl.stickershop.line.naver.jp/stickershop/v1/sticker/{}/android/sticker.png'.format(x)
         image = requests.get(url, stream = True)
-        with open(save_path, 'wb') as f:
-            for chunk in image.iter_content(chunk_size = 1024):
+        with open(save_path, 'wb') as f:  # http://stackoverflow.com/questions/16694907/how-to-download-large-file-in-python-with-requests-py Don't really understand the with right now
+            for chunk in image.iter_content(chunk_size = 10240):  # chunk_size is in bytes
                 if chunk:
                     f.write(chunk)
 
@@ -106,6 +107,7 @@ Solve Unicode with r.content instead of r.text
 leads to http://stackoverflow.com/questions/13186542/functions-in-python-dictionary
 For multiple functions per key: http://stackoverflow.com/questions/9205081/python-is-there-a-way-to-store-a-function-in-a-list-or-dictionary-so-that-when
 How clever.
+http://stackoverflow.com/a/9139961 If I didn't have a check for key in dict, this would've been another way.
 [4] Originally had a conditional in the while state to check if the start_index was -1 to make sure it doesn't get added.
 But a single pop at the end is much better than the if check in every loop iteration.
 '''
