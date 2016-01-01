@@ -8,7 +8,7 @@ import requests, sys, os
 def main():
     pack_id = int(input("Enter the sticker pack ID: "))
     pack_url = "http://dl.stickershop.line.naver.jp/products/0/0/1/{}/android/productInfo.meta".format(pack_id)
-    pack_meta = get_pack_meta(pack_url).text
+    pack_meta = get_pack_meta(pack_url, pack_id).text
 
 
     
@@ -31,13 +31,13 @@ def main():
 
 
     # [3] A less ugly way of checking menu values
-    menu = {'gif': get_gif, 'png': get_png, 'y': get_png, 'both': [get_gif, get_png]}
-    print(menu[pack_ext])
+    menu = {'gif': [get_gif], 'png': [get_png], 'y': [get_png], 'both': [get_gif, get_png]}
     if pack_ext in menu:
         for choice in menu[pack_ext]:
             choice(list_ids, pack_id)
     else:
         print("Nothing done. Program exiting...")
+        sys.exit()
 
     print("\nDone! Program exiting...")
 
@@ -74,7 +74,7 @@ def get_png(list_ids, pack_id):
                     f.write(chunk)
 
 
-def get_pack_meta(pack_url):
+def get_pack_meta(pack_url, pack_id):
     pack_meta = requests.get(pack_url)
 
     # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html Status codes
@@ -83,13 +83,8 @@ def get_pack_meta(pack_url):
 
     if pack_meta.status_code == 200:
         return pack_meta
-        '''
-        f = open('dump.txt', 'w+b')  # [2] write mode
-        f.write(pack_meta.content)  # [1] UnicodeEncodeError
-        f.close()
-        '''
     else:
-        print("{} did not return 200 status code. Program exiting...".format(pack_id))
+        print("{} did not return 200 status code, possibly invalid sticker ID. Program exiting...".format(pack_id))
         sys.exit()
 
 
