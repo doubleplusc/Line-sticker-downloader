@@ -24,14 +24,14 @@ def main():
     current_id, start_index = 0, 0  # [4] Why have start_index included
 
     while start_index != -1:
-        start_index, current_id, pack_meta = get_ids(id_string, pack_meta)  # "Passing by assignment" something mutable vs. immutables. SO didn't give particularly useful explanations...
+        start_index, current_id, pack_meta = get_ids(id_string, pack_meta)  # "Passing by assignment" mutable vs. immutable. Any reassignments done in called function will not reflect on return. But manipulating the parameter will reflect.
         list_ids.append(current_id)
 
     list_ids.pop()  # [4] Why pop
 
 
     # [3] A less ugly way of checking menu values
-    menu = {'gif': [get_gif], 'png': [get_png], 'y': [get_png], 'both': [get_gif, get_png]}
+    menu = {'gif': [get_gif], 'png': [get_png], 'y': [get_png], 'both': [get_gif, get_png]}  # Everything needs to be in a list so the for loop can iterate. Tuples can't be used here (I tried, gives TypeError: function object is not iterable)
     if pack_ext in menu:
         for choice in menu[pack_ext]:
             choice(list_ids, pack_id)
@@ -68,7 +68,7 @@ def get_png(list_ids, pack_id):
         save_path = os.path.join(str(pack_id), str(x) + '.png')
         url = 'http://dl.stickershop.line.naver.jp/stickershop/v1/sticker/{}/android/sticker.png'.format(x)
         image = requests.get(url, stream = True)
-        with open(save_path, 'wb') as f:  # http://stackoverflow.com/questions/16694907/how-to-download-large-file-in-python-with-requests-py Don't really understand the with right now
+        with open(save_path, 'wb') as f:  # http://stackoverflow.com/questions/16694907/how-to-download-large-file-in-python-with-requests-py Understood! with construct is a fancy way of try/catch that cleans up, even with exceptions thrown
             for chunk in image.iter_content(chunk_size = 10240):  # chunk_size is in bytes
                 if chunk:
                     f.write(chunk)
