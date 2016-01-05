@@ -13,7 +13,7 @@ The search result will link to a page that contains the ID.
 
 #Using the Program
 When you open the program, you will be prompted
-'''Enter the sticker pack ID:'''
+```Enter the sticker pack ID:```
 Enter the ID you found from the previous step.
 You will be notified whether animated stickers are available, and prompted for your desired download.
 
