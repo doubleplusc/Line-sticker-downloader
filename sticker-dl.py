@@ -31,7 +31,7 @@ def main():
 
 
     # [3] A less ugly way of checking menu values
-    menu = {'gif': [get_gif], 'png': [get_png], 'y': [get_png], 'both': [get_gif, get_png]}  # Everything needs to be in a list so the for loop can iterate. Tuples can't be used here (I tried, gives TypeError: function object is not iterable)
+    menu = {'gif': (get_gif,), 'png': (get_png,), 'y': (get_png,), 'both': (get_gif, get_png)}  # D'OH! Originally said tuples wouldn't work, which was strange. Thanks to doing MIT problems, I realized I used (var) instead of (var,). Former will not be considered a tuple.
     if pack_ext in menu:
         for choice in menu[pack_ext]:
             choice(list_ids, pack_id)
