@@ -80,7 +80,7 @@ def get_gif(list_ids, pack_name):
         url = 'http://lstk.ddns.net/animg/{}.gif'.format(x)
         image = requests.get(url, stream = True)
         with open(save_path, 'wb') as f:
-            for chunk in image.iter_content(chunk_size = 1024):
+            for chunk in image.iter_content(chunk_size = 10240):
                 if chunk:
                     f.write(chunk)
 
