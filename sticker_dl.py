@@ -1,7 +1,7 @@
 '''Line sticker downloader'''
 
 
-import requests, sys, os
+import requests, sys, os, re, codecs
 
 
 
@@ -111,6 +111,8 @@ def get_pack_meta(pack_id):
     else:
         print("{} did not return 200 status code, possibly invalid sticker ID. Program exiting...".format(pack_id))
         sys.exit()
+
+
 
 
 if __name__ == '__main__':
