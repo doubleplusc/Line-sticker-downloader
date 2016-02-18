@@ -1,8 +1,11 @@
 '''Line sticker downloader'''
 
 
-import requests, sys, os, re, codecs
-
+import requests
+import sys
+import os
+import re
+import codecs
 
 
 def main():
@@ -11,15 +14,13 @@ def main():
 
     name_string = """"en":"""  # folder name will take pack's English title
     pack_name = get_pack_name(name_string, pack_meta)
-    pack_name = bytes(pack_name, 'utf-8').decode('unicode_escape')  # [5] Unicode hurrdurring
+    pack_name = decode_escapes(pack_name)
     print("\nThis pack contains stickers for", pack_name)
 
     if """"hasAnimation":true""" in pack_meta:
         pack_ext = input("\nAnimated stickers available! \nEnter png, gif, or both, anything else to exit: ")
     else:
         pack_ext = input("\nOnly static stickers available! \ny to download, anything else to exit: ")
-    
-
 
     id_string = """"id":"""
     list_ids = []
@@ -31,7 +32,6 @@ def main():
         list_ids.append(current_id)
 
     list_ids.pop()  # [4] Why pop
-
 
     # [3] A less ugly way of checking menu values
     menu = {'gif': (get_gif,), 'png': (get_png,), 'y': (get_png,), 'both': (get_gif, get_png)}  # D'OH! Originally said tuples wouldn't work, which was strange. Thanks to doing MIT problems, I realized I used (var) instead of (var,). Former will not be considered a tuple.
@@ -62,15 +62,10 @@ def get_ids(id_string, pack_meta):
 
 
 def validate_savepath(pack_name):
-    save_name = ""
-    for x in pack_name:
-        if x.isalnum():
-            save_name += x  # only allow alphanumeric characters in save path. Removes any possible invalid filename characters
-    if not save_name:  # invalid filename, unlikely but in case it does
-        save_name = "Sticker pack"
+    decoded_name = decode_escapes(pack_name)
+    save_name = "".join(i for i in decoded_name if i not in r'\/:*?"<>|')
     os.makedirs(str(save_name), exist_ok = True)  # exist_ok = True doesn't raise exception if directory exists. Files already in directory are not erased
     return save_name
-
 
 
 def get_gif(list_ids, pack_name):
@@ -105,20 +100,30 @@ def get_pack_meta(pack_id):
     # http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html Status codes
     # It seems that normal request gives 200. Not sure what it means for program if non200 code is given. Will work with 200 for now.
 
-
     if pack_meta.status_code == 200:
         return pack_meta
     else:
         print("{} did not return 200 status code, possibly invalid sticker ID. Program exiting...".format(pack_id))
         sys.exit()
 
+ESCAPE_SEQUENCE_RE = re.compile(r'''
+    ( \\U........      # 8-digit hex escapes
+    | \\u....          # 4-digit hex escapes
+    | \\x..            # 2-digit hex escapes
+    | \\[0-7]{1,3}     # Octal escapes
+    | \\N\{[^}]+\}     # Unicode characters by name
+    | \\[\\'"abfnrtv]  # Single-character escapes
+    )''', re.UNICODE | re.VERBOSE)
 
+
+def decode_escapes(s):
+    def decode_match(match):
+        return codecs.decode(match.group(0), 'unicode-escape')
+    return ESCAPE_SEQUENCE_RE.sub(decode_match, s)
 
 
 if __name__ == '__main__':
     main()
-
-
 
 
 '''
@@ -133,6 +138,5 @@ http://stackoverflow.com/a/9139961 If I didn't have a check for key in dict, thi
 [4] Originally had a conditional in the while state to check if the start_index was -1 to make sure it doesn't get added.
 But a single pop at the end is much better than the if check in every loop iteration.
 [5] http://stackoverflow.com/questions/4020539/process-escape-sequences-in-a-string-in-python
-After 2 hours of sifting through info on Windows console character mappings and Python 2, I have something that works. Leaves me thoroughly annoyed with Unicode.
-This does not work with things that are actually Unicode. So it's really useful for western languages until I figure that out.
+Regular expression saves the day.
 '''
