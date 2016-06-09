@@ -106,20 +106,20 @@ def get_pack_meta(pack_id):
         print("{} did not return 200 status code, possibly invalid sticker ID. Program exiting...".format(pack_id))
         sys.exit()
 
-ESCAPE_SEQUENCE_RE = re.compile(r'''
-    ( \\U........      # 8-digit hex escapes
-    | \\u....          # 4-digit hex escapes
-    | \\x..            # 2-digit hex escapes
-    | \\[0-7]{1,3}     # Octal escapes
-    | \\N\{[^}]+\}     # Unicode characters by name
-    | \\[\\'"abfnrtv]  # Single-character escapes
-    )''', re.UNICODE | re.VERBOSE)
+unicode_sanitizer = re.compile(r'''  # compile pattern into object, use with match()
+    ( \\U........      # 8-digit hex escapes, backslash U followed by 8 non-newline characters
+    | \\u....          # 4-digit hex escapes, bksl u followed by 4 non-newline characters
+    | \\x..            # 2-digit hex escapes, bksl x followed by 2 non-newline characters
+    | \\[0-7]{1,3}     # Octal escapes, bksl followed by 1 to 3 numbers within range of 0-7
+    | \\N\{[^}]+\}     # Unicode characters by name, uses name index
+    | \\[\\'"abfnrtv]  # Single-character escapes, e.g. tab, backspace, quotes
+    )''', re.VERBOSE)  # re.UNICODE not necessary in Py3, matches Unicode by default. re.VERBOSE allows separated sections
 
 
-def decode_escapes(s):
+def decode_escapes(orig):
     def decode_match(match):
         return codecs.decode(match.group(0), 'unicode-escape')
-    return ESCAPE_SEQUENCE_RE.sub(decode_match, s)
+    return unicode_sanitizer.sub(decode_match, orig)  # sub returns string with replaced patterns
 
 
 if __name__ == '__main__':
