@@ -21,17 +21,17 @@ Alternatively, if you want to search stickers by name, try http://www.line-stick
 
 The search result will link to a page that contains the ID.
 
-![](../blob/master/images/Line sticker - search by name.png?raw=true)
+![](../blob/master/images/Line_sticker_-_search_by_name.png?raw=true)
 
 You can also find the ID through your Line app's sticker preview page and pressing the Share button. If you share to a program that transmits text, the ID and link will be pasted. (Note that your mobile app's page only contains region-locked and unexpired results.)
 
-![](../blob/master/images/Line sticker - ID from app.png?raw=true)
+![](../blob/master/images/Line_sticker_-_ID_share_button.png?raw=true)
 
-![](../blob/master/images/Line sticker - ID share button.png?raw=true)
+![](../blob/master/images/Line_sticker_-_ID_from_app.png?raw=true)
 
 After getting the ID, you can get a preview of the stickers and animated versions where available on http://lstk.ddns.net/Stickers.php. Packs with animations require clicking on the static images to load.
 
-![](../blob/master/images/Line sticker - search by ID.png?raw=true)
+![](../blob/master/images/Line_sticker_-_search_by_ID.png?raw=true)
 
 
 #Using the Program
