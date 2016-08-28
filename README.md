@@ -17,7 +17,7 @@ If your script is running from C:\Users\Foo\sticker_dl.py, and you download a st
 
 #Finding the ID
 
-Alternatively, if you want to search stickers by name, try http://www.line-stickers.com/.
+To search for stickers by name, try http://www.line-stickers.com/.
 
 The search result will link to a page that contains the ID.
 
@@ -29,7 +29,7 @@ You can also find the ID through your Line app's sticker preview page and pressi
 
 ![](/images/Line_sticker_-_ID_from_app.png?raw=true)
 
-After getting the ID, you can get a preview of the stickers and animated versions where available on http://lstk.ddns.net/Stickers.php. Packs with animations require clicking on the static images to load.
+After getting the ID, you can get a preview of the stickers and animated versions where available on http://lstk.ddns.net/Stickers.php. This site is also handy for browsing the entire Line archive of available stickers, most recent shown first. Packs with animations require clicking on the static images to load.
 
 ![](/images/Line_sticker_-_search_by_ID.png?raw=true)
 
@@ -69,4 +69,4 @@ Unlikely, but on the wishlist: inline search of sticker packs, removing need to 
 
 
 
-DISCLAIMER: I am not responsible for what users do with this program. This program was written purely for learning purposes.
+DISCLAIMER: I take no responsibility for what users do with this program.
