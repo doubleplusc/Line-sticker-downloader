@@ -9,7 +9,14 @@ import codecs
 
 
 def main():
-    pack_id = int(input("Enter the sticker pack ID: "))
+    pack_ext = ""
+
+    if len(sys.argv) > 1:
+        pack_id = int(sys.argv[1])
+        if len(sys.argv) > 2:
+            pack_ext = sys.argv[2]
+    else:
+        pack_id = int(input("Enter the sticker pack ID: "))
     pack_meta = get_pack_meta(pack_id).text
 
     name_string = """"en":"""  # folder name will take pack's English title
@@ -17,10 +24,11 @@ def main():
     pack_name = decode_escapes(pack_name)
     print("\nThis pack contains stickers for", pack_name)
 
-    if """"hasAnimation":true""" in pack_meta:
-        pack_ext = input("\nAnimated stickers available! \nEnter png, apng, or both, anything else to exit: ")
-    else:
-        pack_ext = input("\nOnly static stickers available! \ny to download, anything else to exit: ")
+    if pack_ext == "":
+        if """"hasAnimation":true""" in pack_meta:
+            pack_ext = input("\nAnimated stickers available! \nEnter png, apng, or both, anything else to exit: ")
+        else:
+            pack_ext = input("\nOnly static stickers available! \ny to download, anything else to exit: ")
 
     id_string = """"id":"""
     list_ids = []
