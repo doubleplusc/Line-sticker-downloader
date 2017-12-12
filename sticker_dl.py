@@ -22,6 +22,7 @@ def main():
     name_string = """"en":"""  # folder name will take pack's English title
     pack_name = get_pack_name(name_string, pack_meta)
     pack_name = decode_escapes(pack_name)
+    pack_name = pack_name.strip() # To remove empty sides spaces # Example Bug:  Sticker ID= 9721  Name= UNIVERSTAR BT21: Cuteness Overloaded!
     print("\nThis pack contains stickers for", pack_name)
 
     if pack_ext == "":
