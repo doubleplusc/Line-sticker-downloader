@@ -1,4 +1,4 @@
-#Line sticker downloader
+# Line sticker downloader
 This is a Python script that downloads Line stickers, both static and animated (where available).
 
 For Windows 7 64-bit users, a standalone executable is available on the releases page. Its compatibility with Windows 8 and 10 are not guaranteed. For other operating systems, please consult https://docs.python.org/3.5/using/index.html for installing and using Python.
@@ -17,7 +17,7 @@ Your stickers will be downloaded to a folder on the same level as where your scr
 
 If your script is running from C:\Users\Foo\sticker_dl.py, and you download a sticker pack named Bar, your downloaded stickers will be in C:\Users\Foo\Bar\.
 
-#Finding the ID
+# Finding the ID
 
 To search for stickers by name, try http://www.line-stickers.com/.
 
@@ -37,8 +37,22 @@ After getting the ID, you can get a preview of the stickers and animated version
 
 ![](/images/Line_sticker_-_search_by_ID.png?raw=true)
 
+# Using the Program using python directly
 
-#Using the Program
+Check python version 
+`python -V`
+
+then run 
+
+`python sticker_dl.py`
+
+Note : 
+
+for python v3 up -> sticker_dl.py
+
+for python v2 up -> sticker_dl-python-v2.py 
+
+# Using the Program
 When you open the program, you will be prompted
 
 ```Enter the sticker pack ID:```
@@ -47,7 +61,7 @@ Enter the ID you found from the previous step.
 
 You will be notified whether animated stickers are available, and prompted for your desired download.
 
-#Download options
+# Download options
 png: static stickers only.
 
 y: static stickers only.
@@ -59,7 +73,7 @@ both: both static and animated stickers will be downloaded.
 Anything else: exit the program without downloading.
 
 
-#TODO
+# TODO
 
 Next release: support animated "popup" stickers. Script only downloads static versions for now.
 
