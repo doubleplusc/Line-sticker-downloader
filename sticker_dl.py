@@ -27,9 +27,21 @@ def main():
 
     if pack_ext == "":
         if """"hasAnimation":true""" in pack_meta:
-            pack_ext = input("\nAnimated stickers available! \nEnter png, apng, or both, anything else to exit: ")
+            if sys.version_info[0] < 3:
+                # https://stackoverflow.com/questions/31722883/python-nameerror-name-hello-is-not-defined
+                # compatibility python v2
+                pack_ext = raw_input("\nAnimated stickers available! \nEnter png, apng, or both, anything else to exit: ")
+            else:
+                pack_ext = input("\nAnimated stickers available! \nEnter png, apng, or both, anything else to exit: ")
+
         else:
-            pack_ext = input("\nOnly static stickers available! \ny to download, anything else to exit: ")
+            if sys.version_info[0] < 3:
+                # https://stackoverflow.com/questions/31722883/python-nameerror-name-hello-is-not-defined
+                # compatibility python v2
+                pack_ext = raw_input("\nOnly static stickers available! \ny to download, anything else to exit: ")
+            else:
+                pack_ext = input("\nOnly static stickers available! \ny to download, anything else to exit: ")
+
 
     id_string = """"id":"""
     list_ids = []
@@ -73,7 +85,19 @@ def get_ids(id_string, pack_meta):
 def validate_savepath(pack_name):
     decoded_name = decode_escapes(pack_name)
     save_name = "".join(i for i in decoded_name if i not in r'\/:*?"<>|')
-    os.makedirs(str(save_name), exist_ok = True)  # exist_ok = True doesn't raise exception if directory exists. Files already in directory are not erased
+
+    # python version selection
+    if sys.version_info[0] < 3:
+        # https://github.com/bamos/dcgan-completion.tensorflow/issues/20
+        # compatibility python v2
+        try:
+            os.makedirs(str(save_name))
+        except OSError:
+            print "Skipping creation of %s because it exists already."%str(save_name)
+    else:
+        # python version >= 3
+        os.makedirs(str(save_name), exist_ok = True)  # exist_ok = True doesn't raise exception if directory exists. Files already in directory are not erased
+    
     return save_name
 
 
