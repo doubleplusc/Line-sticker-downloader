@@ -80,7 +80,12 @@ def validate_savepath(pack_name):
     # https://github.com/bamos/dcgan-completion.tensorflow/issues/20
     # compatibility python v2
     # os.makedirs(str(save_name), exist_ok = True) # exist_ok = True doesn't raise exception if directory exists. Files already in directory are not erased
-    os.makedirs(str(save_name))  
+
+    try:
+        os.makedirs(str(save_name))
+    except OSError:
+        print "Skipping creation of %s because it exists already."%str(save_name)
+
     return save_name
 
 
