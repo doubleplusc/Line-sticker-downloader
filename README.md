@@ -39,18 +39,15 @@ After getting the ID, you can get a preview of the stickers and animated version
 
 # Using the Program using python directly
 
-Check python version 
-`python -V`
-
-then run 
+to run 
 
 `python sticker_dl.py`
 
-Note : 
+if you find this not working properly please provide your python version
 
-for python v3 up -> sticker_dl.py
+Check python version 
 
-for python v2 up -> sticker_dl-python-v2.py 
+`python -V`
 
 # Using the Program
 When you open the program, you will be prompted
