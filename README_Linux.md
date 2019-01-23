@@ -1,6 +1,5 @@
 # LINE-sticker-downloader
-Simple code to easily download LINE sticker packs. Download and process sticker packs. Opti
-mised for using downloaded content as WhatsApp stickers.
+Simple code to easily download LINE sticker packs. Download and process sticker packs. Optimised for using downloaded content as WhatsApp stickers.
 
 ## Currently only for Linux/Ubuntu
 
