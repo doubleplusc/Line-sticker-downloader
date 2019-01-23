@@ -1,4 +1,3 @@
-import webbrowser
 import sticker_dl as sd
 import os
 import subprocess as sp
