@@ -107,7 +107,8 @@ def get_gif(pack_id, list_ids, pack_name):
         # save_path = os.path.join(str(pack_name), str(x) + '.gif')
         save_path = os.path.join(str(pack_name), str(x) + '.apng')
         # url = 'http://lstk.ddns.net/animg/{}.gif'.format(x)
-        url = 'https://sdl-stickershop.line.naver.jp/products/0/0/1/{}/android/animation/{}.png'.format(pack_id, x)
+        #url = 'https://sdl-stickershop.line.naver.jp/products/0/0/1/{}/android/animation/{}.png'.format(pack_id, x)
+        url = 'https://sdl-stickershop.line.naver.jp/products/0/0/1/{}/iphone/animation/{}@2x.png'.format(pack_id, x)
         image = requests.get(url, stream = True)
         with open(save_path, 'wb') as f:
             for chunk in image.iter_content(chunk_size = 10240):
@@ -119,7 +120,8 @@ def get_png(pack_id, list_ids, pack_name):
     pack_name = validate_savepath(pack_name)
     for x in list_ids:
         save_path = os.path.join(str(pack_name), str(x) + '.png')
-        url = 'http://dl.stickershop.line.naver.jp/stickershop/v1/sticker/{}/android/sticker.png'.format(x)
+        #url = 'http://dl.stickershop.line.naver.jp/stickershop/v1/sticker/{}/android/sticker.png'.format(x)
+        url = 'http://dl.stickershop.line.naver.jp/stickershop/v1/sticker/{}/iphone/sticker@2x.png'.format(x)
         image = requests.get(url, stream = True)
         with open(save_path, 'wb') as f:  # http://stackoverflow.com/questions/16694907/how-to-download-large-file-in-python-with-requests-py Understood! with construct is a fancy way of try/catch that cleans up, even with exceptions thrown
             for chunk in image.iter_content(chunk_size = 10240):  # chunk_size is in bytes
