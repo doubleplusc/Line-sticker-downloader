@@ -93,11 +93,11 @@ def validate_savepath(pack_name):
         try:
             os.makedirs(str(save_name))
         except OSError:
-            print "Skipping creation of %s because it exists already."%str(save_name)
+            print("Skipping creation of %s because it exists already."%str(save_name))
     else:
         # python version >= 3
         os.makedirs(str(save_name), exist_ok = True)  # exist_ok = True doesn't raise exception if directory exists. Files already in directory are not erased
-    
+
     return save_name
 
 
