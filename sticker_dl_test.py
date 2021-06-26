@@ -1,4 +1,4 @@
-from sticker_dl import *
+import sticker_dl
 
 import re
 import codecs
@@ -24,16 +24,16 @@ def main():
 
     # http://stackoverflow.com/questions/4020539/process-escape-sequences-in-a-string-in-python
     # 2 hours of searching. Python why.
-    pack_meta = get_pack_meta(5737).text
+    pack_meta = sticker_dl.get_pack_meta(5737).text
     name_string = """"ko":"""
-    pack_name = get_pack_name(name_string, pack_meta)
+    pack_name = sticker_dl.get_pack_name(name_string, pack_meta)
     decoded_name = decode_escapes(pack_name)
     file_name = "".join(i for i in decoded_name if i not in r'\/:*?"<>|')  # https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words  # noqa: E501
     print(file_name)
 
-    pack_meta = get_pack_meta(5737).text
+    pack_meta = sticker_dl.get_pack_meta(5737).text
     name_string = """"en":"""
-    pack_name = get_pack_name(name_string, pack_meta)
+    pack_name = sticker_dl.get_pack_name(name_string, pack_meta)
     decoded_name = decode_escapes(pack_name)
     file_name = "".join(i for i in decoded_name if i not in r'\/:*?"<>|')
     print(file_name)
