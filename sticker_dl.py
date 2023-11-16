@@ -6,6 +6,7 @@ import sys
 import os
 import re
 import codecs
+from apnggif import apnggif
 
 
 def main():
@@ -31,10 +32,10 @@ def main():
                 # https://stackoverflow.com/questions/31722883/python-nameerror-name-hello-is-not-defined
                 # compatibility python v2
                 pack_ext = input("\nAnimated stickers available! \n"
-                                 "Enter png, apng, or both, anything else to exit: ")  # noqa: E501
+                                 "Enter png, apng, or gif, anything else to exit: ")  # noqa: E501
             else:
                 pack_ext = input("\nAnimated stickers available! \n"
-                                 "Enter png, apng, or both, anything else to exit: ")  # noqa: E501
+                                 "Enter png, apng, or gif, anything else to exit: ")  # noqa: E501
 
         else:
             if sys.version_info[0] < 3:
@@ -59,10 +60,10 @@ def main():
     list_ids.pop()  # [4] Why pop
 
     # [3] A less ugly way of checking menu values
-    menu = {'apng': (get_gif,),
+    menu = {'apng': (get_apng,),
             'png': (get_png,),
             'y': (get_png,),
-            'both': (get_gif, get_png)}  # D'OH! Originally said tuples wouldn't work, which was strange. Thanks to doing MIT problems, I realized I used (var) instead of (var,). Former will not be considered a tuple. # noqa: E501
+            'gif': (get_gif,)}  # D'OH! Originally said tuples wouldn't work, which was strange. Thanks to doing MIT problems, I realized I used (var) instead of (var,). Former will not be considered a tuple. # noqa: E501
     if pack_ext in menu:
         for choice in menu[pack_ext]:
             choice(pack_id, list_ids, pack_name)
@@ -109,6 +110,21 @@ def validate_savepath(pack_name):
 
 
 def get_gif(pack_id, list_ids, pack_name):
+    pack_name = validate_savepath(pack_name)
+    for x in list_ids:
+        temp_apng_path = os.path.join(str(pack_name), str(x) + '.apng')
+        save_path = os.path.join(str(pack_name), str(x) + '.gif')
+        url = 'https://sdl-stickershop.line.naver.jp/products/0/0/1/{}/iphone/animation/{}@2x.png'.format(pack_id, x)  # noqa: E501
+        image = requests.get(url, stream=True)
+        with open(temp_apng_path, 'wb') as f:
+            for chunk in image.iter_content(chunk_size=10240):
+                if chunk:
+                    f.write(chunk)
+        apnggif(temp_apng_path, save_path)
+        os.remove(temp_apng_path)
+
+
+def get_apng(pack_id, list_ids, pack_name):
     pack_name = validate_savepath(pack_name)
     for x in list_ids:
         # save_path = os.path.join(str(pack_name), str(x) + '.gif')
