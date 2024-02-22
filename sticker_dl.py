@@ -1,16 +1,18 @@
 '''Line sticker downloader'''
 
-
+from PIL import Image, ImageSequence
 import requests
 import sys
 import os
 import re
 import codecs
-
+from apnggif import apnggif
+from bs4 import BeautifulSoup
+import json
 
 def main():
     pack_ext = ""
-
+    flag = 0
     if len(sys.argv) > 1:
         pack_id = int(sys.argv[1])
         if len(sys.argv) > 2:
@@ -31,10 +33,13 @@ def main():
                 # https://stackoverflow.com/questions/31722883/python-nameerror-name-hello-is-not-defined
                 # compatibility python v2
                 pack_ext = input("\nAnimated stickers available! \n"
-                                 "Enter png, apng, or both, anything else to exit: ")  # noqa: E501
+                                 "Enter png, apng, or gif, anything else to exit: ")  # noqa: E501
             else:
                 pack_ext = input("\nAnimated stickers available! \n"
-                                 "Enter png, apng, or both, anything else to exit: ")  # noqa: E501
+                                 "Enter png, apng, or gif, anything else to exit: ")  # noqa: E501
+                if not (pack_ext == "png" or pack_ext == "apng" or pack_ext == "gif"):
+                    print("Invalid input: exiting")
+                    sys.exit()
 
         else:
             if sys.version_info[0] < 3:
@@ -44,7 +49,11 @@ def main():
                                  "y to download, anything else to exit: ")
             else:
                 pack_ext = input("\nOnly static stickers available! \n"
-                                 "y to download, anything else to exit: ")
+                                 "y to download. If there is animation n to try experimental gif method , anything else to exit: ")
+                if not (pack_ext == "y" or pack_ext == "n"):
+                        print("Invalid input: exiting")
+                        sys.exit()
+                
 
     id_string = """"id":"""
     list_ids = []
@@ -59,10 +68,11 @@ def main():
     list_ids.pop()  # [4] Why pop
 
     # [3] A less ugly way of checking menu values
-    menu = {'apng': (get_gif,),
+    menu = {'apng': (get_apng,),
             'png': (get_png,),
             'y': (get_png,),
-            'both': (get_gif, get_png)}  # D'OH! Originally said tuples wouldn't work, which was strange. Thanks to doing MIT problems, I realized I used (var) instead of (var,). Former will not be considered a tuple. # noqa: E501
+            'n': (get_gif_url,),
+            'gif': (get_gif,)}  # D'OH! Originally said tuples wouldn't work, which was strange. Thanks to doing MIT problems, I realized I used (var) instead of (var,). Former will not be considered a tuple. # noqa: E501
     if pack_ext in menu:
         for choice in menu[pack_ext]:
             choice(pack_id, list_ids, pack_name)
@@ -109,6 +119,58 @@ def validate_savepath(pack_name):
 
 
 def get_gif(pack_id, list_ids, pack_name):
+    pack_name = validate_savepath(pack_name)
+    for x in list_ids:
+        temp_apng_path = os.path.join(str(pack_name), str(x) + '.apng')
+        save_path = os.path.join(str(pack_name), str(x) + '.gif')
+        url = 'https://sdl-stickershop.line.naver.jp/products/0/0/1/{}/iphone/animation/{}@2x.png'.format(pack_id, x)  # noqa: E501
+        image = requests.get(url, stream=True)
+        with open(temp_apng_path, 'wb') as f:
+            for chunk in image.iter_content(chunk_size=10240):
+                if chunk:
+                    f.write(chunk)
+        apnggif(temp_apng_path, save_path)
+        gif = Image.open(save_path)
+        frames = [frame.copy() for frame in ImageSequence.Iterator(gif)]
+        frames[0].save(save_path, save_all=True, disposal=2, append_images=frames[1:], loop=0)
+        gif = Image.open(save_path)
+        os.remove(temp_apng_path)
+
+
+def get_gif_url(pack_id, list_ids, pack_name):
+    response = requests.get("https://store.line.me/stickershop/product/{}/en".format(pack_id))
+    html = response.content.decode()
+    list_urls = []
+    for i in list_urls:
+        print(i)
+    parsed_html = BeautifulSoup(html, 'html.parser').find(class_="FnStickerList")
+    for i in parsed_html.find_all('li'):
+        if not json.loads(i["data-preview"])["popupUrl"] == "":
+            list_urls.append(json.loads(i["data-preview"])["popupUrl"])
+        elif not json.loads(i["data-preview"])["animationUrl"] == "":
+            list_urls.append(json.loads(i["data-preview"])["animationUrl"])
+        else:
+            print("There is no animations")
+            return
+    pack_name = validate_savepath(pack_name)
+    count = 0
+    for x in list_urls:
+        temp_apng_path = os.path.join(str(pack_name), str(count) + '.apng')
+        save_path = os.path.join(str(pack_name), str(count) + '.gif')
+        url = x # noqa: E501
+        image = requests.get(url, stream=True)
+        with open(temp_apng_path, 'wb') as f:
+            for chunk in image.iter_content(chunk_size=10240):
+                if chunk:
+                    f.write(chunk)
+        gif = Image.open(temp_apng_path)
+        gif.save(save_path, save_all=True, disposal=2, loop=0)
+        gif.close()
+        os.remove(temp_apng_path)
+        count += 1
+
+
+def get_apng(pack_id, list_ids, pack_name):
     pack_name = validate_savepath(pack_name)
     for x in list_ids:
         # save_path = os.path.join(str(pack_name), str(x) + '.gif')
