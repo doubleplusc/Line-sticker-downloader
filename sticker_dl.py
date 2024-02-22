@@ -12,7 +12,6 @@ import json
 
 def main():
     pack_ext = ""
-    flag = 0
     if len(sys.argv) > 1:
         pack_id = int(sys.argv[1])
         if len(sys.argv) > 2:
